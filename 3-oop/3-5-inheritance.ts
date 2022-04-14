@@ -5,8 +5,6 @@
  * interface를 통해서도 얻을 수 잇다.
  */
 
-import e from 'cors';
-
 {
   type CoffeeCup = {
     shots: number;
@@ -96,4 +94,98 @@ import e from 'cors';
   const coffee = latteMachine.makeCoffee(1);
   console.log(coffee);
   console.log(latteMachine.serialNumber);
+}
+//////////////////////////////////////////////////////
+{
+  type GymMember = {
+    muscles: number;
+    fatigability: number;
+  };
+
+  interface GymNewbie {
+    workout(hours: number): GymMember;
+    currentState: GymMember;
+  }
+  interface GymPro {
+    workout(hours: number): GymMember;
+    backWorkOut(): void;
+    chestWorkOut(): void;
+    legsWorkOut(): void;
+  }
+
+  class Gym implements GymNewbie, GymPro {
+    protected muscles = 0;
+
+    constructor(
+      protected fatigability: number,
+      protected deltaPerHour: number
+    ) {}
+
+    get currentState(): GymMember {
+      return { muscles: this.muscles, fatigability: this.fatigability };
+    }
+
+    backWorkOut() {
+      console.log('working out back');
+    }
+    chestWorkOut() {
+      console.log('working out chest');
+    }
+    legsWorkOut() {
+      console.log('working out legs');
+    }
+
+    workout(hours: number): GymMember {
+      if (this.fatigability >= 100) {
+        console.log('Too Tired to Workout! Need to Rest!');
+      }
+      this.backWorkOut();
+      this.chestWorkOut();
+      this.legsWorkOut();
+      this.muscles += hours * this.deltaPerHour;
+      this.fatigability += hours * this.deltaPerHour;
+
+      return {
+        muscles: this.muscles,
+        fatigability: this.fatigability,
+      };
+    }
+  }
+
+  class LuxuryGym extends Gym {
+    constructor(fatigability: number, deltaPerHour: number) {
+      super(fatigability, deltaPerHour);
+    }
+
+    run(mins: number) {
+      console.log(`running for ${mins}minutes`);
+      this.fatigability += this.deltaPerHour;
+      this.muscles += this.deltaPerHour;
+    }
+    workout(hours: number): GymMember {
+      super.workout(hours);
+      this.run(hours * 20);
+
+      return {
+        muscles: this.muscles,
+        fatigability: this.fatigability,
+      };
+    }
+  }
+
+  const gadot = new Gym(80, 5);
+  const mark = new LuxuryGym(20, 10);
+  console.log('===========================');
+  console.log(mark.currentState);
+  mark.workout(2);
+  console.log(mark.currentState);
+
+  // console.log(gadot.currentState);
+  // gadot.workout(2);
+  // console.log(gadot.currentState);
+  // const mark: GymNewbie = new Gym(30, 20);
+  // const gadot: GymPro = new Gym(80, 5);
+  // console.log(mark.currentState);
+  // mark.workout(2);
+  // console.log(mark.currentState);
 }

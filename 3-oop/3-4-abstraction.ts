@@ -111,3 +111,64 @@ import e from 'cors';
   //   amateur.makeCoffee();
   barista.makeCoffee();
 }
+
+//////////////////////////////////////////////////////
+{
+  type GymMember = {
+    muscles: number;
+    fatigability: number;
+  };
+
+  interface GymNewbie {
+    workout(hours: number): GymMember;
+    currentState: GymMember;
+  }
+  interface GymPro {
+    workout(hours: number): GymMember;
+    backWorkOut(): void;
+    chestWorkOut(): void;
+    legsWorkOut(): void;
+  }
+
+  class Gym implements GymNewbie, GymPro {
+    private muscles = 0;
+
+    constructor(private fatigability: number, private deltaPerHour: number) {}
+
+    get currentState(): GymMember {
+      return { muscles: this.muscles, fatigability: this.fatigability };
+    }
+
+    backWorkOut() {
+      console.log('working out back');
+    }
+    chestWorkOut() {
+      console.log('working out chest');
+    }
+    legsWorkOut() {
+      console.log('working out legs');
+    }
+
+    workout(hours: number): GymMember {
+      if (this.fatigability >= 100) {
+        console.log('Too Tired to Workout! Need to Rest!');
+      }
+      this.backWorkOut();
+      this.chestWorkOut();
+      this.legsWorkOut();
+      this.muscles += hours * this.deltaPerHour;
+      this.fatigability += hours * this.deltaPerHour;
+
+      return {
+        muscles: this.muscles,
+        fatigability: this.fatigability,
+      };
+    }
+  }
+
+  const mark: GymNewbie = new Gym(30, 20);
+  const gadot: GymPro = new Gym(80, 5);
+  console.log(mark.currentState);
+  mark.workout(2);
+  console.log(mark.currentState);
+}

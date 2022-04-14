@@ -1,5 +1,3 @@
-import e from 'cors';
-
 {
   type CoffeeCup = {
     shots: number;
@@ -78,4 +76,43 @@ import e from 'cors';
   console.log(user.age);
   user.age = 6;
   console.log(user.age);
+}
+
+//////////////////////////////////////////////////////
+{
+  type GymMember = {
+    muscles: number;
+    fatigability: number;
+  };
+
+  class Gym {
+    private muscles = 0;
+
+    constructor(private fatigability: number, private deltaPerHour: number) {}
+
+    get currentState(): GymMember {
+      return { muscles: this.muscles, fatigability: this.fatigability };
+    }
+
+    workout(hours: number): GymMember {
+      if (this.fatigability >= 100) {
+        console.log('Too Tired to Workout! Need to Rest!');
+      }
+
+      this.muscles += hours * this.deltaPerHour;
+      this.fatigability += hours * this.deltaPerHour;
+
+      return {
+        muscles: this.muscles,
+        fatigability: this.fatigability,
+      };
+    }
+  }
+
+  const mark = new Gym(30, 20);
+  const gadot = new Gym(80, 5);
+
+  console.log(mark.currentState);
+  mark.workout(2);
+  console.log(mark.currentState);
 }

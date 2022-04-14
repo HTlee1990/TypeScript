@@ -1,3 +1,4 @@
+import { throws } from 'assert';
 import e from 'cors';
 
 {
@@ -45,3 +46,58 @@ import e from 'cors';
   // Math.abs
   // Math.PI
 }
+
+//////////////////////////////////////////////////////
+
+type GymMember = {
+  muscles: number;
+  fatigability: number;
+};
+
+class Gym {
+  muscles = 0;
+  fatigability: number;
+  deltaPerHour: number;
+
+  constructor(fatigability: number, deltaPerHour: number) {
+    this.fatigability = fatigability;
+    this.deltaPerHour = deltaPerHour;
+  }
+
+  get currentState(): GymMember {
+    return { muscles: this.muscles, fatigability: this.fatigability };
+  }
+
+  backWorkOut() {
+    console.log('working out back');
+  }
+  chestWorkOut() {
+    console.log('working out chest');
+  }
+  legsWorkOut() {
+    console.log('working out legs');
+  }
+
+  workout(hours: number): GymMember {
+    if (this.fatigability >= 100) {
+      console.log('Too Tired to Workout! Need to Rest!');
+    }
+    this.backWorkOut();
+    this.chestWorkOut();
+    this.legsWorkOut();
+    this.muscles += hours * this.deltaPerHour;
+    this.fatigability += hours * this.deltaPerHour;
+
+    return {
+      muscles: this.muscles,
+      fatigability: this.fatigability,
+    };
+  }
+}
+
+const mark = new Gym(30, 20);
+const gadot = new Gym(80, 5);
+
+console.log(mark.currentState);
+mark.workout(2);
+console.log(mark.currentState);

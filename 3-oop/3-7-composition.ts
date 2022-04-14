@@ -184,3 +184,107 @@ import e from 'cors';
   const coldLatteMachine = new CoffeeMachine(12, fancyMilkSteamer, noSugar);
   const sweetLatteMachine = new CoffeeMachine(12, fancyMilkSteamer, jarSugar);
 }
+
+//////////////////////////////////////////////////////
+{
+  type GymMember = {
+    muscles: number;
+    fatigability: number;
+  };
+
+  interface GymNewbie {
+    workout(hours: number): GymMember;
+    currentState: GymMember;
+  }
+
+  interface Treadmill {
+    run(
+      mins: number,
+      muscles: number,
+      fatigability: number,
+      deltaPerHour: number
+    ): Record<keyof GymMember, number>;
+  }
+
+  class Gym implements GymNewbie {
+    protected muscles = 0;
+
+    constructor(
+      protected fatigability: number,
+      protected deltaPerHour: number,
+      private treadmill: Treadmill
+    ) {}
+
+    get currentState(): GymMember {
+      return { muscles: this.muscles, fatigability: this.fatigability };
+    }
+
+    private backWorkOut() {
+      console.log('working out back');
+    }
+    private chestWorkOut() {
+      console.log('working out chest');
+    }
+    private legsWorkOut() {
+      console.log('working out legs');
+    }
+
+    workout(hours: number): GymMember {
+      if (this.fatigability >= 100) {
+        console.log('Too Tired to Workout! Need to Rest!');
+      }
+      this.backWorkOut();
+      this.chestWorkOut();
+      this.legsWorkOut();
+      this.muscles += hours * this.deltaPerHour;
+      this.fatigability += hours * this.deltaPerHour;
+      return this.treadmill.run(
+        hours * 60,
+        this.muscles,
+        this.fatigability,
+        this.deltaPerHour
+      );
+    }
+  }
+
+  class NoRunning implements Treadmill {
+    run(
+      mins: number,
+      muscles: number,
+      fatigability: number,
+      deltaPerHour: number
+    ): Record<keyof GymMember, number> {
+      console.log('no need to run');
+      return { fatigability, muscles };
+    }
+  }
+  class Running implements Treadmill {
+    run(
+      mins: number,
+      muscles: number,
+      fatigability: number,
+      deltaPerHour: number
+    ): Record<keyof GymMember, number> {
+      console.log('running...🏃💨');
+      fatigability += deltaPerHour * (mins / 60);
+      muscles += deltaPerHour * (mins / 60);
+      return { fatigability, muscles };
+    }
+  }
+
+  //running coach
+  const skinnyOne = new NoRunning();
+  const fatOne = new Running();
+
+  const mark = new Gym(10, 5, fatOne);
+  const gadot = new Gym(10, 5, skinnyOne);
+
+  console.log('------------------------------');
+  console.log(mark.currentState);
+  mark.workout(2);
+  console.log(mark.currentState);
+  console.log('------------------------------');
+  console.log(gadot.currentState);
+  gadot.workout(2);
+  console.log(gadot.currentState);
+}
